@@ -429,6 +429,9 @@ const InterrogationRoom: React.FC<InterrogationRoomProps> = ({
           </motion.div>
         )}
       </div>
+
+      {/* Interrogative Overlay */}
+      <InterrogativeOverlay />
     </div>
   );
 };

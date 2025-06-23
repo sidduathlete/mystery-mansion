@@ -29,6 +29,7 @@ const InterrogationRoom: React.FC<InterrogationRoomProps> = ({
     Array<{ type: "question" | "response"; text: string }>
   >([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [showInterrogativeEffect, setShowInterrogativeEffect] = useState(false);
 
   const handleAskQuestion = async () => {
     if (!question.trim() || suspect.interactionCount >= suspect.maxInteractions)

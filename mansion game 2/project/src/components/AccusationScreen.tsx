@@ -19,15 +19,38 @@ const AccusationScreen: React.FC<AccusationScreenProps> = ({
   const [showInterrogativeEffect, setShowInterrogativeEffect] = useState(false);
   const [clickedSuspect, setClickedSuspect] = useState<string | null>(null);
 
+  const handleSuspectClick = (suspectId: string) => {
+    setClickedSuspect(suspectId);
+    setShowInterrogativeEffect(true);
+
+    // Create suspenseful delay before selection
+    setTimeout(() => {
+      setSelectedSuspect(suspectId);
+      setShowInterrogativeEffect(false);
+      setClickedSuspect(null);
+    }, 1200);
+  };
+
   const handleAccuse = () => {
     if (selectedSuspect) {
-      setShowConfirmation(true);
+      setShowInterrogativeEffect(true);
+
+      // Dramatic pause before showing confirmation
+      setTimeout(() => {
+        setShowConfirmation(true);
+        setShowInterrogativeEffect(false);
+      }, 1500);
     }
   };
 
   const confirmAccusation = () => {
     if (selectedSuspect) {
-      onMakeAccusation(selectedSuspect);
+      setShowInterrogativeEffect(true);
+
+      // Final dramatic pause before verdict
+      setTimeout(() => {
+        onMakeAccusation(selectedSuspect);
+      }, 2000);
     }
   };
 

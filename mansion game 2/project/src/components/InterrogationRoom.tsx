@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Send, BookOpen, AlertTriangle } from 'lucide-react';
-import { Suspect } from '../types';
-import { generateSuspectResponse } from '../gameLogic';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ArrowLeft,
+  Send,
+  BookOpen,
+  AlertTriangle,
+  Eye,
+  Brain,
+} from "lucide-react";
+import { Suspect } from "../types";
+import { generateSuspectResponse } from "../gameLogic";
 
 interface InterrogationRoomProps {
   suspect: Suspect;
@@ -11,40 +18,50 @@ interface InterrogationRoomProps {
   onInteractionComplete: (suspect: Suspect, response: string) => void;
 }
 
-const InterrogationRoom: React.FC<InterrogationRoomProps> = ({ 
-  suspect, 
-  onBack, 
-  onClueFound, 
-  onInteractionComplete 
+const InterrogationRoom: React.FC<InterrogationRoomProps> = ({
+  suspect,
+  onBack,
+  onClueFound,
+  onInteractionComplete,
 }) => {
-  const [question, setQuestion] = useState('');
-  const [conversation, setConversation] = useState<Array<{type: 'question' | 'response', text: string}>>([]);
+  const [question, setQuestion] = useState("");
+  const [conversation, setConversation] = useState<
+    Array<{ type: "question" | "response"; text: string }>
+  >([]);
   const [isTyping, setIsTyping] = useState(false);
 
   const handleAskQuestion = async () => {
-    if (!question.trim() || suspect.interactionCount >= suspect.maxInteractions) return;
+    if (!question.trim() || suspect.interactionCount >= suspect.maxInteractions)
+      return;
 
     const newQuestion = question.trim();
-    setQuestion('');
+    setQuestion("");
     setIsTyping(true);
 
     // Add question to conversation
-    setConversation(prev => [...prev, { type: 'question', text: newQuestion }]);
+    setConversation((prev) => [
+      ...prev,
+      { type: "question", text: newQuestion },
+    ]);
 
     // Simulate AI thinking time
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
     // Generate response
-    const response = generateSuspectResponse(suspect, newQuestion, suspect.interactionCount + 1);
-    
+    const response = generateSuspectResponse(
+      suspect,
+      newQuestion,
+      suspect.interactionCount + 1,
+    );
+
     // Add response to conversation
-    setConversation(prev => [...prev, { type: 'response', text: response }]);
-    
+    setConversation((prev) => [...prev, { type: "response", text: response }]);
+
     // Update suspect interaction count
     const updatedSuspect = {
       ...suspect,
       interactionCount: suspect.interactionCount + 1,
-      responses: [...suspect.responses, response]
+      responses: [...suspect.responses, response],
     };
 
     // Check for clues in the response
@@ -62,7 +79,7 @@ const InterrogationRoom: React.FC<InterrogationRoomProps> = ({
     "What was your relationship with the victim?",
     "Did you have any reason to want them dead?",
     "Can anyone verify your alibi?",
-    "What do you know about the other suspects?"
+    "What do you know about the other suspects?",
   ];
 
   return (
@@ -82,14 +99,15 @@ const InterrogationRoom: React.FC<InterrogationRoomProps> = ({
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Suspects</span>
           </button>
-
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-white">Interrogation Room</h2>
+            <h2 className="text-2xl font-bold text-white">
+              Interrogation Room
+            </h2>
             <p className="text-gray-300">
-              {suspect.maxInteractions - suspect.interactionCount} questions remaining
+              {suspect.maxInteractions - suspect.interactionCount} questions
+              remaining
             </p>
           </div>
-
           <div className="w-32"></div> {/* Spacer for centering */}
         </motion.div>
 
@@ -120,23 +138,29 @@ const InterrogationRoom: React.FC<InterrogationRoomProps> = ({
           <div className="p-6 h-96 overflow-y-auto space-y-4">
             {conversation.length === 0 && (
               <div className="text-center text-gray-400 italic">
-                The suspect sits across from you, waiting for your first question...
+                The suspect sits across from you, waiting for your first
+                question...
               </div>
             )}
-            
+
             {conversation.map((message, index) => (
               <motion.div
                 key={index}
-                className={`flex ${message.type === 'question' ? 'justify-end' : 'justify-start'}`}
-                initial={{ opacity: 0, x: message.type === 'question' ? 20 : -20 }}
+                className={`flex ${message.type === "question" ? "justify-end" : "justify-start"}`}
+                initial={{
+                  opacity: 0,
+                  x: message.type === "question" ? 20 : -20,
+                }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <div className={`max-w-xs lg:max-w-md px-4 py-3 rounded-lg ${
-                  message.type === 'question' 
-                    ? 'bg-blue-600 text-white' 
-                    : 'bg-gray-700 text-gray-100'
-                }`}>
+                <div
+                  className={`max-w-xs lg:max-w-md px-4 py-3 rounded-lg ${
+                    message.type === "question"
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-700 text-gray-100"
+                  }`}
+                >
                   <p className="text-sm">{message.text}</p>
                 </div>
               </motion.div>
@@ -173,7 +197,7 @@ const InterrogationRoom: React.FC<InterrogationRoomProps> = ({
                 type="text"
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleAskQuestion()}
+                onKeyPress={(e) => e.key === "Enter" && handleAskQuestion()}
                 placeholder="Ask your question..."
                 className="flex-1 px-4 py-3 bg-white/10 backdrop-blur-sm border border-gray-700/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                 disabled={isTyping}

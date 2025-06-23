@@ -98,8 +98,107 @@ const AccusationScreen: React.FC<AccusationScreenProps> = ({
     );
   }
 
+  // Interrogative overlay component
+  const InterrogativeOverlay = () => (
+    <AnimatePresence>
+      {showInterrogativeEffect && (
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          {/* Dark overlay with pulsing effect */}
+          <motion.div
+            className="absolute inset-0 bg-black/80"
+            animate={{
+              opacity: [0.8, 0.9, 0.8],
+            }}
+            transition={{
+              duration: 0.8,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+
+          {/* Central interrogation effect */}
+          <motion.div
+            className="relative z-10 text-center"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+          >
+            {/* Pulsing eye */}
+            <motion.div
+              className="text-red-500 mb-6"
+              animate={{
+                scale: [1, 1.2, 1],
+                rotateZ: [0, 5, -5, 0],
+              }}
+              transition={{
+                duration: 0.6,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <Eye className="w-16 h-16 mx-auto" />
+            </motion.div>
+
+            {/* Dramatic text */}
+            <motion.div
+              className="text-white space-y-2"
+              animate={{
+                opacity: [0.7, 1, 0.7],
+              }}
+              transition={{
+                duration: 1,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <p className="text-2xl font-bold tracking-wider">
+                SCRUTINIZING...
+              </p>
+              <motion.p
+                className="text-lg text-red-300"
+                animate={{
+                  scale: [0.95, 1.05, 0.95],
+                }}
+                transition={{
+                  duration: 0.8,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                Choose wisely. Lives depend on it.
+              </motion.p>
+            </motion.div>
+
+            {/* Lightning effect */}
+            <motion.div
+              className="absolute -top-8 -right-8"
+              animate={{
+                opacity: [0, 1, 0],
+                scale: [0.5, 1, 0.5],
+                rotateZ: [0, 180, 360],
+              }}
+              transition={{
+                duration: 0.4,
+                repeat: Infinity,
+                repeatDelay: 1.2,
+                ease: "easeInOut",
+              }}
+            >
+              <Zap className="w-8 h-8 text-yellow-400" />
+            </motion.div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black p-6 relative">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div

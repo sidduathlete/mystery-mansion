@@ -333,16 +333,63 @@ const AccusationScreen: React.FC<AccusationScreenProps> = ({
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.6 }}
         >
-          <button
+          <motion.button
             onClick={handleAccuse}
-            disabled={!selectedSuspect}
-            className="px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 rounded-xl text-white font-bold text-lg shadow-2xl hover:shadow-red-500/25 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={!selectedSuspect || showInterrogativeEffect}
+            className="px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 rounded-xl text-white font-bold text-lg shadow-2xl hover:shadow-red-500/25 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
+            whileHover={
+              !showInterrogativeEffect && selectedSuspect
+                ? {
+                    scale: 1.05,
+                    boxShadow: "0 25px 50px -12px rgba(239, 68, 68, 0.5)",
+                  }
+                : {}
+            }
+            whileTap={
+              !showInterrogativeEffect && selectedSuspect ? { scale: 0.95 } : {}
+            }
           >
-            <span className="flex items-center space-x-2">
-              <Gavel className="w-6 h-6" />
-              <span>Accuse the Killer</span>
+            {/* Dramatic pulsing background when active */}
+            <AnimatePresence>
+              {selectedSuspect && !showInterrogativeEffect && (
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-red-500 to-red-600"
+                  animate={{
+                    opacity: [0.3, 0.6, 0.3],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+              )}
+            </AnimatePresence>
+
+            <span className="flex items-center space-x-2 relative z-10">
+              <motion.div
+                animate={
+                  selectedSuspect
+                    ? {
+                        rotateZ: [0, -10, 10, 0],
+                      }
+                    : {}
+                }
+                transition={{
+                  duration: 1.5,
+                  repeat: selectedSuspect ? Infinity : 0,
+                  ease: "easeInOut",
+                }}
+              >
+                <Gavel className="w-6 h-6" />
+              </motion.div>
+              <span>
+                {showInterrogativeEffect
+                  ? "PROCESSING..."
+                  : "Accuse the Killer"}
+              </span>
             </span>
-          </button>
+          </motion.button>
         </motion.div>
       </div>
     </div>

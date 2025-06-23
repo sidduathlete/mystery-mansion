@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowLeft, AlertTriangle, Gavel } from 'lucide-react';
-import { Suspect } from '../types';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, AlertTriangle, Gavel, Eye, Zap } from "lucide-react";
+import { Suspect } from "../types";
 
 interface AccusationScreenProps {
   suspects: Suspect[];
@@ -9,7 +9,11 @@ interface AccusationScreenProps {
   onMakeAccusation: (suspectId: string) => void;
 }
 
-const AccusationScreen: React.FC<AccusationScreenProps> = ({ suspects, onBack, onMakeAccusation }) => {
+const AccusationScreen: React.FC<AccusationScreenProps> = ({
+  suspects,
+  onBack,
+  onMakeAccusation,
+}) => {
   const [selectedSuspect, setSelectedSuspect] = useState<string | null>(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -26,7 +30,7 @@ const AccusationScreen: React.FC<AccusationScreenProps> = ({ suspects, onBack, o
   };
 
   if (showConfirmation) {
-    const accused = suspects.find(s => s.id === selectedSuspect);
+    const accused = suspects.find((s) => s.id === selectedSuspect);
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-red-900 to-black flex items-center justify-center p-6">
         <motion.div
@@ -37,14 +41,18 @@ const AccusationScreen: React.FC<AccusationScreenProps> = ({ suspects, onBack, o
         >
           <div className="bg-black/60 backdrop-blur-sm rounded-2xl p-8 border border-red-500/50">
             <AlertTriangle className="w-16 h-16 text-red-400 mx-auto mb-6" />
-            <h2 className="text-3xl font-bold text-white mb-4">Final Accusation</h2>
+            <h2 className="text-3xl font-bold text-white mb-4">
+              Final Accusation
+            </h2>
             <p className="text-xl text-gray-300 mb-6">
-              You are about to accuse <span className="text-red-400 font-bold">{accused?.name}</span> of murder.
+              You are about to accuse{" "}
+              <span className="text-red-400 font-bold">{accused?.name}</span> of
+              murder.
             </p>
             <p className="text-gray-400 mb-8">
               This decision is final. Are you certain you have enough evidence?
             </p>
-            
+
             <div className="flex space-x-4 justify-center">
               <button
                 onClick={() => setShowConfirmation(false)}
@@ -88,7 +96,9 @@ const AccusationScreen: React.FC<AccusationScreenProps> = ({ suspects, onBack, o
               <Gavel className="w-8 h-8" />
               <span>Make Your Accusation</span>
             </h2>
-            <p className="text-gray-300">Choose who you believe is the killer</p>
+            <p className="text-gray-300">
+              Choose who you believe is the killer
+            </p>
           </div>
 
           <div className="w-20"></div>
@@ -103,7 +113,9 @@ const AccusationScreen: React.FC<AccusationScreenProps> = ({ suspects, onBack, o
         >
           <div className="flex items-center space-x-2 text-red-300">
             <AlertTriangle className="w-5 h-5" />
-            <span className="font-medium">Warning: This decision is final. Choose carefully.</span>
+            <span className="font-medium">
+              Warning: This decision is final. Choose carefully.
+            </span>
           </div>
         </motion.div>
 
@@ -114,22 +126,26 @@ const AccusationScreen: React.FC<AccusationScreenProps> = ({ suspects, onBack, o
               key={suspect.id}
               className={`cursor-pointer transition-all duration-300 ${
                 selectedSuspect === suspect.id
-                  ? 'ring-2 ring-red-500 ring-offset-2 ring-offset-gray-900'
-                  : ''
+                  ? "ring-2 ring-red-500 ring-offset-2 ring-offset-gray-900"
+                  : ""
               }`}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1, duration: 0.6 }}
               onClick={() => setSelectedSuspect(suspect.id)}
             >
-              <div className={`bg-black/40 backdrop-blur-sm rounded-2xl p-6 border transition-all ${
-                selectedSuspect === suspect.id
-                  ? 'border-red-500/50 bg-red-900/20'
-                  : 'border-gray-700/50 hover:border-purple-500/50'
-              }`}>
+              <div
+                className={`bg-black/40 backdrop-blur-sm rounded-2xl p-6 border transition-all ${
+                  selectedSuspect === suspect.id
+                    ? "border-red-500/50 bg-red-900/20"
+                    : "border-gray-700/50 hover:border-purple-500/50"
+                }`}
+              >
                 <div className="text-center mb-4">
                   <div className="text-5xl mb-3">{suspect.avatar}</div>
-                  <h3 className="text-xl font-bold text-white mb-1">{suspect.name}</h3>
+                  <h3 className="text-xl font-bold text-white mb-1">
+                    {suspect.name}
+                  </h3>
                   <p className="text-purple-300 font-medium">{suspect.role}</p>
                 </div>
 
@@ -144,7 +160,9 @@ const AccusationScreen: React.FC<AccusationScreenProps> = ({ suspects, onBack, o
                   </div>
                   <div>
                     <span className="text-gray-400">Questions Asked: </span>
-                    <span className="text-yellow-300">{suspect.interactionCount}/{suspect.maxInteractions}</span>
+                    <span className="text-yellow-300">
+                      {suspect.interactionCount}/{suspect.maxInteractions}
+                    </span>
                   </div>
                 </div>
 
@@ -154,7 +172,9 @@ const AccusationScreen: React.FC<AccusationScreenProps> = ({ suspects, onBack, o
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                   >
-                    <span className="text-red-300 font-medium">Selected for Accusation</span>
+                    <span className="text-red-300 font-medium">
+                      Selected for Accusation
+                    </span>
                   </motion.div>
                 )}
               </div>

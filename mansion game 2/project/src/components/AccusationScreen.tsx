@@ -252,11 +252,31 @@ const AccusationScreen: React.FC<AccusationScreenProps> = ({
                 selectedSuspect === suspect.id
                   ? "ring-2 ring-red-500 ring-offset-2 ring-offset-gray-900"
                   : ""
+              } ${
+                clickedSuspect === suspect.id && showInterrogativeEffect
+                  ? "brightness-150 ring-4 ring-yellow-400 ring-offset-4 ring-offset-gray-900"
+                  : ""
               }`}
               initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.6 }}
-              onClick={() => setSelectedSuspect(suspect.id)}
+              animate={{
+                opacity: 1,
+                y: 0,
+                scale:
+                  clickedSuspect === suspect.id && showInterrogativeEffect
+                    ? [1, 1.05, 1]
+                    : 1,
+              }}
+              transition={{
+                delay: index * 0.1,
+                duration: 0.6,
+                scale: {
+                  duration: 0.3,
+                  repeat: clickedSuspect === suspect.id ? Infinity : 0,
+                },
+              }}
+              onClick={() =>
+                !showInterrogativeEffect && handleSuspectClick(suspect.id)
+              }
             >
               <div
                 className={`bg-black/40 backdrop-blur-sm rounded-2xl p-6 border transition-all ${

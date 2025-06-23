@@ -91,8 +91,143 @@ const InterrogationRoom: React.FC<InterrogationRoomProps> = ({
     "What do you know about the other suspects?",
   ];
 
+  // Interrogative overlay for questioning tension
+  const InterrogativeOverlay = () => (
+    <AnimatePresence>
+      {showInterrogativeEffect && (
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          {/* Dark overlay with red pulsing */}
+          <motion.div
+            className="absolute inset-0 bg-black/85"
+            animate={{
+              backgroundColor: [
+                "rgba(0,0,0,0.85)",
+                "rgba(127,29,29,0.4)",
+                "rgba(0,0,0,0.85)",
+              ],
+            }}
+            transition={{
+              duration: 1.2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+
+          {/* Central interrogation effect */}
+          <motion.div
+            className="relative z-10 text-center"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+          >
+            {/* Scanning effect */}
+            <motion.div
+              className="flex items-center justify-center space-x-4 mb-6"
+              animate={{
+                scale: [1, 1.1, 1],
+              }}
+              transition={{
+                duration: 0.8,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <motion.div
+                animate={{
+                  rotateY: [0, 180, 360],
+                }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+              >
+                <Eye className="w-12 h-12 text-red-400" />
+              </motion.div>
+              <motion.div
+                animate={{
+                  scale: [0.8, 1.2, 0.8],
+                  opacity: [0.5, 1, 0.5],
+                }}
+                transition={{
+                  duration: 1,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                <Brain className="w-12 h-12 text-purple-400" />
+              </motion.div>
+            </motion.div>
+
+            {/* Interrogation text */}
+            <motion.div
+              className="text-white space-y-2"
+              animate={{
+                opacity: [0.6, 1, 0.6],
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <p className="text-3xl font-bold tracking-wider text-red-300">
+                INTERROGATING
+              </p>
+              <motion.p
+                className="text-lg text-gray-300"
+                animate={{
+                  scale: [0.9, 1.1, 0.9],
+                }}
+                transition={{
+                  duration: 1.2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                Reading micro-expressions...
+              </motion.p>
+              <motion.div
+                className="flex justify-center space-x-1 mt-4"
+                animate={{
+                  opacity: [0.3, 1, 0.3],
+                }}
+                transition={{
+                  duration: 0.8,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                {[...Array(5)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="w-2 h-2 bg-red-400 rounded-full"
+                    animate={{
+                      scale: [0.5, 1.5, 0.5],
+                    }}
+                    transition={{
+                      duration: 0.6,
+                      repeat: Infinity,
+                      delay: i * 0.1,
+                      ease: "easeInOut",
+                    }}
+                  />
+                ))}
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black p-6 relative">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <motion.div

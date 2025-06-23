@@ -37,6 +37,14 @@ const InterrogationRoom: React.FC<InterrogationRoomProps> = ({
 
     const newQuestion = question.trim();
     setQuestion("");
+
+    // Show intense interrogative effect before asking
+    setShowInterrogativeEffect(true);
+
+    // Dramatic pause before proceeding
+    await new Promise((resolve) => setTimeout(resolve, 1800));
+
+    setShowInterrogativeEffect(false);
     setIsTyping(true);
 
     // Add question to conversation
@@ -45,8 +53,8 @@ const InterrogationRoom: React.FC<InterrogationRoomProps> = ({
       { type: "question", text: newQuestion },
     ]);
 
-    // Simulate AI thinking time
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    // Simulate AI thinking time with more suspense
+    await new Promise((resolve) => setTimeout(resolve, 2200));
 
     // Generate response
     const response = generateSuspectResponse(

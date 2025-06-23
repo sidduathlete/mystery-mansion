@@ -1,14 +1,98 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { MessageCircle, Lock, CheckCircle } from 'lucide-react';
-import { Suspect } from '../types';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { MessageCircle, Lock, CheckCircle, Eye } from "lucide-react";
+import { Suspect } from "../types";
 
 interface SuspectGridProps {
   suspects: Suspect[];
   onSelectSuspect: (suspect: Suspect) => void;
 }
 
-const SuspectGrid: React.FC<SuspectGridProps> = ({ suspects, onSelectSuspect }) => {
+const SuspectGrid: React.FC<SuspectGridProps> = ({
+  suspects,
+  onSelectSuspect,
+}) => {
+  const [selectedSuspectId, setSelectedSuspectId] = useState<string | null>(
+    null,
+  );
+  const [showInterrogativeEffect, setShowInterrogativeEffect] = useState(false);
+
+  const handleSelectSuspect = (suspect: Suspect) => {
+    if (suspect.interactionCount >= suspect.maxInteractions) return;
+
+    setSelectedSuspectId(suspect.id);
+    setShowInterrogativeEffect(true);
+
+    // Brief dramatic pause before proceeding
+    setTimeout(() => {
+      setShowInterrogativeEffect(false);
+      setSelectedSuspectId(null);
+      onSelectSuspect(suspect);
+    }, 1000);
+  };
+
+  // Interrogative overlay component
+  const InterrogativeOverlay = () => (
+    <AnimatePresence>
+      {showInterrogativeEffect && (
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            className="absolute inset-0 bg-black/70"
+            animate={{
+              opacity: [0.7, 0.8, 0.7],
+            }}
+            transition={{
+              duration: 0.6,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+
+          <motion.div
+            className="relative z-10 text-center"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+          >
+            <motion.div
+              className="text-purple-400 mb-4"
+              animate={{
+                scale: [1, 1.2, 1],
+                rotateZ: [0, 10, -10, 0],
+              }}
+              transition={{
+                duration: 0.8,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <Eye className="w-12 h-12 mx-auto" />
+            </motion.div>
+
+            <motion.p
+              className="text-white text-xl font-bold tracking-wider"
+              animate={{
+                opacity: [0.8, 1, 0.8],
+              }}
+              transition={{
+                duration: 0.7,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              APPROACHING SUSPECT...
+            </motion.p>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black p-6">
       <div className="max-w-6xl mx-auto">
@@ -18,9 +102,12 @@ const SuspectGrid: React.FC<SuspectGridProps> = ({ suspects, onSelectSuspect }) 
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="text-4xl font-bold text-white mb-4">Choose Your Suspect</h2>
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Choose Your Suspect
+          </h2>
           <p className="text-xl text-gray-300">
-            Five suspects. One killer. Each person can only be questioned 5 times.
+            Five suspects. One killer. Each person can only be questioned 5
+            times.
           </p>
         </motion.div>
 
@@ -37,9 +124,11 @@ const SuspectGrid: React.FC<SuspectGridProps> = ({ suspects, onSelectSuspect }) 
                 {/* Avatar and Status */}
                 <div className="text-center mb-4">
                   <div className="text-6xl mb-3">{suspect.avatar}</div>
-                  <h3 className="text-xl font-bold text-white mb-1">{suspect.name}</h3>
+                  <h3 className="text-xl font-bold text-white mb-1">
+                    {suspect.name}
+                  </h3>
                   <p className="text-purple-300 font-medium">{suspect.role}</p>
-                  
+
                   {/* Interaction Status */}
                   <div className="flex items-center justify-center mt-3 space-x-2">
                     {suspect.interactionCount >= suspect.maxInteractions ? (
@@ -50,7 +139,9 @@ const SuspectGrid: React.FC<SuspectGridProps> = ({ suspects, onSelectSuspect }) 
                     ) : suspect.interactionCount > 0 ? (
                       <div className="flex items-center space-x-1 text-yellow-400">
                         <MessageCircle className="w-4 h-4" />
-                        <span className="text-sm">{suspect.interactionCount}/{suspect.maxInteractions}</span>
+                        <span className="text-sm">
+                          {suspect.interactionCount}/{suspect.maxInteractions}
+                        </span>
                       </div>
                     ) : (
                       <div className="flex items-center space-x-1 text-green-400">
@@ -64,15 +155,23 @@ const SuspectGrid: React.FC<SuspectGridProps> = ({ suspects, onSelectSuspect }) 
                 {/* Background Info */}
                 <div className="space-y-3 mb-6">
                   <div>
-                    <h4 className="text-sm font-semibold text-gray-400 mb-1">Background</h4>
-                    <p className="text-gray-300 text-sm">{suspect.background}</p>
+                    <h4 className="text-sm font-semibold text-gray-400 mb-1">
+                      Background
+                    </h4>
+                    <p className="text-gray-300 text-sm">
+                      {suspect.background}
+                    </p>
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-gray-400 mb-1">Last Seen</h4>
+                    <h4 className="text-sm font-semibold text-gray-400 mb-1">
+                      Last Seen
+                    </h4>
                     <p className="text-gray-300 text-sm">{suspect.lastSeen}</p>
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-gray-400 mb-1">Possible Motive</h4>
+                    <h4 className="text-sm font-semibold text-gray-400 mb-1">
+                      Possible Motive
+                    </h4>
                     <p className="text-red-300 text-sm">{suspect.motive}</p>
                   </div>
                 </div>
@@ -83,13 +182,23 @@ const SuspectGrid: React.FC<SuspectGridProps> = ({ suspects, onSelectSuspect }) 
                   disabled={suspect.interactionCount >= suspect.maxInteractions}
                   className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 ${
                     suspect.interactionCount >= suspect.maxInteractions
-                      ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-purple-600 to-red-600 text-white hover:from-purple-700 hover:to-red-700 shadow-lg hover:shadow-purple-500/25'
+                      ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+                      : "bg-gradient-to-r from-purple-600 to-red-600 text-white hover:from-purple-700 hover:to-red-700 shadow-lg hover:shadow-purple-500/25"
                   }`}
-                  whileHover={suspect.interactionCount < suspect.maxInteractions ? { scale: 1.02 } : {}}
-                  whileTap={suspect.interactionCount < suspect.maxInteractions ? { scale: 0.98 } : {}}
+                  whileHover={
+                    suspect.interactionCount < suspect.maxInteractions
+                      ? { scale: 1.02 }
+                      : {}
+                  }
+                  whileTap={
+                    suspect.interactionCount < suspect.maxInteractions
+                      ? { scale: 0.98 }
+                      : {}
+                  }
                 >
-                  {suspect.interactionCount >= suspect.maxInteractions ? 'No More Questions' : 'Interrogate'}
+                  {suspect.interactionCount >= suspect.maxInteractions
+                    ? "No More Questions"
+                    : "Interrogate"}
                 </motion.button>
               </div>
             </motion.div>

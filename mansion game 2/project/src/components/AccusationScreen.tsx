@@ -16,6 +16,8 @@ const AccusationScreen: React.FC<AccusationScreenProps> = ({
 }) => {
   const [selectedSuspect, setSelectedSuspect] = useState<string | null>(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showInterrogativeEffect, setShowInterrogativeEffect] = useState(false);
+  const [clickedSuspect, setClickedSuspect] = useState<string | null>(null);
 
   const handleAccuse = () => {
     if (selectedSuspect) {

@@ -392,6 +392,9 @@ const AccusationScreen: React.FC<AccusationScreenProps> = ({
           </motion.button>
         </motion.div>
       </div>
+
+      {/* Interrogative Overlay */}
+      <InterrogativeOverlay />
     </div>
   );
 };

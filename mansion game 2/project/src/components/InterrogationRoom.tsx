@@ -346,13 +346,61 @@ const InterrogationRoom: React.FC<InterrogationRoomProps> = ({
                 className="flex-1 px-4 py-3 bg-white/10 backdrop-blur-sm border border-gray-700/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                 disabled={isTyping}
               />
-              <button
+              <motion.button
                 onClick={handleAskQuestion}
-                disabled={!question.trim() || isTyping}
-                className="px-6 py-3 bg-gradient-to-r from-purple-600 to-red-600 rounded-lg text-white font-medium hover:from-purple-700 hover:to-red-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={
+                  !question.trim() || isTyping || showInterrogativeEffect
+                }
+                className="px-6 py-3 bg-gradient-to-r from-purple-600 to-red-600 rounded-lg text-white font-medium hover:from-purple-700 hover:to-red-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
+                whileHover={
+                  !isTyping && !showInterrogativeEffect && question.trim()
+                    ? {
+                        scale: 1.05,
+                        boxShadow: "0 10px 25px rgba(168, 85, 247, 0.4)",
+                      }
+                    : {}
+                }
+                whileTap={
+                  !isTyping && !showInterrogativeEffect && question.trim()
+                    ? { scale: 0.95 }
+                    : {}
+                }
               >
-                <Send className="w-5 h-5" />
-              </button>
+                {/* Pulsing background when ready */}
+                <AnimatePresence>
+                  {question.trim() && !isTyping && !showInterrogativeEffect && (
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-red-500 to-purple-500"
+                      animate={{
+                        opacity: [0.2, 0.4, 0.2],
+                      }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                    />
+                  )}
+                </AnimatePresence>
+
+                <motion.div
+                  className="relative z-10"
+                  animate={
+                    question.trim() && !isTyping && !showInterrogativeEffect
+                      ? {
+                          rotateZ: [0, -5, 5, 0],
+                        }
+                      : {}
+                  }
+                  transition={{
+                    duration: 2,
+                    repeat: question.trim() ? Infinity : 0,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <Send className="w-5 h-5" />
+                </motion.div>
+              </motion.button>
             </div>
 
             {/* Suggested Questions */}

@@ -12,6 +12,87 @@ const SuspectGrid: React.FC<SuspectGridProps> = ({
   suspects,
   onSelectSuspect,
 }) => {
+  const [selectedSuspectId, setSelectedSuspectId] = useState<string | null>(
+    null,
+  );
+  const [showInterrogativeEffect, setShowInterrogativeEffect] = useState(false);
+
+  const handleSelectSuspect = (suspect: Suspect) => {
+    if (suspect.interactionCount >= suspect.maxInteractions) return;
+
+    setSelectedSuspectId(suspect.id);
+    setShowInterrogativeEffect(true);
+
+    // Brief dramatic pause before proceeding
+    setTimeout(() => {
+      setShowInterrogativeEffect(false);
+      setSelectedSuspectId(null);
+      onSelectSuspect(suspect);
+    }, 1000);
+  };
+
+  // Interrogative overlay component
+  const InterrogativeOverlay = () => (
+    <AnimatePresence>
+      {showInterrogativeEffect && (
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            className="absolute inset-0 bg-black/70"
+            animate={{
+              opacity: [0.7, 0.8, 0.7],
+            }}
+            transition={{
+              duration: 0.6,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+
+          <motion.div
+            className="relative z-10 text-center"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+          >
+            <motion.div
+              className="text-purple-400 mb-4"
+              animate={{
+                scale: [1, 1.2, 1],
+                rotateZ: [0, 10, -10, 0],
+              }}
+              transition={{
+                duration: 0.8,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <Eye className="w-12 h-12 mx-auto" />
+            </motion.div>
+
+            <motion.p
+              className="text-white text-xl font-bold tracking-wider"
+              animate={{
+                opacity: [0.8, 1, 0.8],
+              }}
+              transition={{
+                duration: 0.7,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              APPROACHING SUSPECT...
+            </motion.p>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black p-6">
       <div className="max-w-6xl mx-auto">
